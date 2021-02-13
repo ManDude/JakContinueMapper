@@ -33,6 +33,7 @@ namespace JakContinueMapper
             this.label2 = new System.Windows.Forms.Label();
             this.dpdGame = new System.Windows.Forms.ComboBox();
             this.fraGame = new System.Windows.Forms.GroupBox();
+            this.btnToggleContForm = new System.Windows.Forms.Button();
             this.lblContinueMedianDist = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dpdLevel = new System.Windows.Forms.ComboBox();
@@ -42,9 +43,9 @@ namespace JakContinueMapper
             this.lblContinueName1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtPos = new System.Windows.Forms.TextBox();
             this.lblError = new System.Windows.Forms.Label();
-            this.btnToggleContForm = new System.Windows.Forms.Button();
+            this.btnAbout = new System.Windows.Forms.Button();
+            this.lblPos = new System.Windows.Forms.Label();
             this.fraEmu.SuspendLayout();
             this.fraGame.SuspendLayout();
             this.SuspendLayout();
@@ -73,9 +74,6 @@ namespace JakContinueMapper
             // 
             this.dpdGame.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.dpdGame.FormattingEnabled = true;
-            this.dpdGame.Items.AddRange(new object[] {
-            "Jak & Daxter (NTSC-U)",
-            "Jak & Daxter (PAL)"});
             this.dpdGame.Location = new System.Drawing.Point(100, 22);
             this.dpdGame.Name = "dpdGame";
             this.dpdGame.Size = new System.Drawing.Size(175, 23);
@@ -84,6 +82,7 @@ namespace JakContinueMapper
             // 
             // fraGame
             // 
+            this.fraGame.Controls.Add(this.lblPos);
             this.fraGame.Controls.Add(this.btnToggleContForm);
             this.fraGame.Controls.Add(this.lblContinueMedianDist);
             this.fraGame.Controls.Add(this.label1);
@@ -94,7 +93,6 @@ namespace JakContinueMapper
             this.fraGame.Controls.Add(this.lblContinueName1);
             this.fraGame.Controls.Add(this.label4);
             this.fraGame.Controls.Add(this.label3);
-            this.fraGame.Controls.Add(this.txtPos);
             this.fraGame.Location = new System.Drawing.Point(12, 72);
             this.fraGame.Name = "fraGame";
             this.fraGame.Size = new System.Drawing.Size(281, 186);
@@ -102,6 +100,16 @@ namespace JakContinueMapper
             this.fraGame.TabStop = false;
             this.fraGame.Text = "Game";
             this.fraGame.Visible = false;
+            // 
+            // btnToggleContForm
+            // 
+            this.btnToggleContForm.Location = new System.Drawing.Point(6, 154);
+            this.btnToggleContForm.Name = "btnToggleContForm";
+            this.btnToggleContForm.Size = new System.Drawing.Size(135, 23);
+            this.btnToggleContForm.TabIndex = 10;
+            this.btnToggleContForm.Text = "Show All Checkpoints";
+            this.btnToggleContForm.UseVisualStyleBackColor = true;
+            this.btnToggleContForm.Click += new System.EventHandler(this.btnToggleContForm_Click);
             // 
             // lblContinueMedianDist
             // 
@@ -201,22 +209,12 @@ namespace JakContinueMapper
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(6, 22);
+            this.label3.Location = new System.Drawing.Point(6, 19);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 50);
+            this.label3.Size = new System.Drawing.Size(88, 53);
             this.label3.TabIndex = 1;
             this.label3.Text = "Position";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // txtPos
-            // 
-            this.txtPos.Location = new System.Drawing.Point(100, 22);
-            this.txtPos.Multiline = true;
-            this.txtPos.Name = "txtPos";
-            this.txtPos.ReadOnly = true;
-            this.txtPos.Size = new System.Drawing.Size(175, 51);
-            this.txtPos.TabIndex = 0;
-            this.txtPos.Text = "X\r\nY\r\nZ";
             // 
             // lblError
             // 
@@ -229,21 +227,33 @@ namespace JakContinueMapper
             this.lblError.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.lblError.Visible = false;
             // 
-            // btnToggleContForm
+            // btnAbout
             // 
-            this.btnToggleContForm.Location = new System.Drawing.Point(6, 154);
-            this.btnToggleContForm.Name = "btnToggleContForm";
-            this.btnToggleContForm.Size = new System.Drawing.Size(135, 23);
-            this.btnToggleContForm.TabIndex = 10;
-            this.btnToggleContForm.Text = "Show All Checkpoints";
-            this.btnToggleContForm.UseVisualStyleBackColor = true;
-            this.btnToggleContForm.Click += new System.EventHandler(this.btnToggleContForm_Click);
+            this.btnAbout.AutoSize = true;
+            this.btnAbout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAbout.Location = new System.Drawing.Point(299, 12);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(50, 25);
+            this.btnAbout.TabIndex = 3;
+            this.btnAbout.Text = "About";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
+            // lblPos
+            // 
+            this.lblPos.Location = new System.Drawing.Point(100, 19);
+            this.lblPos.Name = "lblPos";
+            this.lblPos.Size = new System.Drawing.Size(175, 53);
+            this.lblPos.TabIndex = 11;
+            this.lblPos.Text = "X:\r\nY:\r\nZ:";
+            this.lblPos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(434, 269);
+            this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.fraGame);
             this.Controls.Add(this.fraEmu);
@@ -255,6 +265,7 @@ namespace JakContinueMapper
             this.fraGame.ResumeLayout(false);
             this.fraGame.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -269,13 +280,14 @@ namespace JakContinueMapper
         private System.Windows.Forms.Label lblContinueName1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtPos;
         private System.Windows.Forms.ComboBox dpdLevel;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.Label lblContinueMedianDist;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnToggleContForm;
+        private System.Windows.Forms.Button btnAbout;
+        private System.Windows.Forms.Label lblPos;
     }
 }
 

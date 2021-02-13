@@ -10,6 +10,11 @@ namespace JakContinueMapper
         private MainForm main;
         private List<Label> labels = new List<Label>();
 
+        private Font fontRegular;
+        private Font fontItalic;
+        private Font fontBold;
+
+        internal const int ContListHeight = 19;
         public ContinueForm(MainForm main)
         {
             InitializeComponent();
@@ -19,7 +24,12 @@ namespace JakContinueMapper
             {
                 foreach (GameContinue cont in kvp.Value)
                 {
-                    Label lbl = new Label() { Location = new Point(lblContList.Location.X+i/20*240, lblContList.Location.Y+i%20*(lblContList.Height+5)), Text = cont.Name + ": 00000.000000", Size = new Size(240, lblContList.Height) };
+                    Label lbl = new Label() {
+                        Location = new Point(lblContList.Location.X+i/ContListHeight*240,
+                                             lblContList.Location.Y+i%ContListHeight*(lblContList.Height+5)),
+                        Text = cont.Name,
+                        Size = new Size(240, lblContList.Height),
+                        Tag = cont };
                     Width = Math.Max(lbl.Location.X+lbl.Width, Width);
                     Height = Math.Max(lbl.Location.Y+lbl.Height+3+45, Height);
                     Controls.Add(lbl);
@@ -27,6 +37,9 @@ namespace JakContinueMapper
                     ++i;
                 }
             }
+            fontRegular = new Font(labels[0].Font, FontStyle.Regular);
+            fontItalic = new Font(fontRegular, FontStyle.Italic);
+            fontBold = new Font(fontRegular, FontStyle.Bold);
         }
 
         protected override void OnMove(EventArgs e)
@@ -37,22 +50,16 @@ namespace JakContinueMapper
 
         public void UpdateAllContinues(string level, float tgt_x, float tgt_y, float tgt_z, GameContinue closest)
         {
-            int i = 0;
-            foreach (var kvp in MainForm.continues)
+            foreach (var lbl in labels)
             {
-                foreach (GameContinue cont in kvp.Value)
-                {
-                    Label lbl = labels[i++];
-                    if (kvp.Key != level)
-                    {
-                        lbl.Font = new Font(lbl.Font, FontStyle.Italic);
-                    }
-                    else
-                    {
-                        lbl.Font = new Font(lbl.Font, cont == closest ? FontStyle.Bold : FontStyle.Regular);
-                    }
-                    lbl.Text = cont.Name + $": {MathExt.Dist3D(tgt_x, tgt_y, tgt_z, cont.X, cont.Y, cont.Z)/4096}";
-                }
+                GameContinue cont = (GameContinue)lbl.Tag;
+                if (cont.Level != level)
+                    lbl.Font = fontItalic;
+                else if (cont == closest)
+                    lbl.Font = fontBold;
+                else
+                    lbl.Font = fontRegular;
+                lbl.Text = $"{cont.Name}: {MathExt.Dist3D(tgt_x, tgt_y, tgt_z, cont.X, cont.Y, cont.Z)/4096}";
             }
         }
     }

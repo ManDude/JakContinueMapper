@@ -9,7 +9,7 @@ namespace JakContinueMapper
     public partial class MainForm : Form
     {
         public Emulators.PCSX2 Emulator { get; set; }
-        public GameMemory Game { get; set; }
+        public GameMemoryAttribute Game { get; set; }
 
         private GameAddr addrTargetPos;
         private GameAddr addrSafeLevel;
@@ -104,6 +104,33 @@ namespace JakContinueMapper
             }}
         };
 
+        internal static Dictionary<string, GameMemoryAttribute> games = new Dictionary<string, GameMemoryAttribute>();
+        internal void PopulateGamesList()
+        {
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var t in a.GetExportedTypes())
+                {
+                    foreach (GameMemoryAttribute attr in t.GetCustomAttributes(typeof(GameMemoryAttribute), false))
+                    {
+                        games.Add(attr.Name, attr);
+                        dpdGame.Items.Add(attr.Name);
+                    }
+                }
+            }
+        }
+
+        internal void SetContinueLevels()
+        {
+            foreach (var kvp in continues)
+            {
+                foreach (GameContinue cont in kvp.Value)
+                {
+                    cont.Level = kvp.Key;
+                }
+            }
+        }
+
         public MainForm()
         {
             Emulator = new Emulators.PCSX2();
@@ -111,6 +138,8 @@ namespace JakContinueMapper
             MinimumSize = Size;
             continueForm = new ContinueForm(this);
             //continueForm.Show();
+            PopulateGamesList();
+            SetContinueLevels();
 
             memtimer = new Timer
             {
@@ -125,11 +154,7 @@ namespace JakContinueMapper
                     try
                     {
                         Emulator.ReadFloat3(addrTargetPos, out float tgt_x, out float tgt_y, out float tgt_z);
-                        string[] lines = new string[3];
-                        lines[0] = $"X: {tgt_x/4096} ({tgt_x})";
-                        lines[1] = $"Y: {tgt_y/4096} ({tgt_y})";
-                        lines[2] = $"Z: {tgt_z/4096} ({tgt_z})";
-                        txtPos.Lines = lines;
+                        lblPos.Text = $"X: {tgt_x/4096} ({tgt_x})\nY: {tgt_y/4096} ({tgt_y})\nZ: {tgt_z/4096} ({tgt_z})";
 
                         GameContinue close1 = null, close2 = null;
                         string level = (string)dpdLevel.SelectedItem;
@@ -161,13 +186,13 @@ namespace JakContinueMapper
                         if (close1 == null)
                             lblContinueName1.Text = "(no available checkpoint)";
                         else
-                            lblContinueName1.Text = close1.Name + $" ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close1.X, close1.Y, close1.Z)/4096})";
+                            lblContinueName1.Text = $"{close1.Name} ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close1.X, close1.Y, close1.Z)/4096})";
                         if (close1 != null && close2 == null)
                             lblContinueName2.Text = "(idle deload has no effect)";
                         else if (close2 == null)
                             lblContinueName2.Text = "(no available checkpoint)";
                         else
-                            lblContinueName2.Text = close2.Name + $" ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close2.X, close2.Y, close2.Z)/4096})";
+                            lblContinueName2.Text = $"{close2.Name} ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close2.X, close2.Y, close2.Z)/4096})";
                         if (close1 != null && close2 != null)
                         {
                             float mx = (close1.X + close2.X) / 2;
@@ -191,7 +216,7 @@ namespace JakContinueMapper
                     }
                     catch (Win32Exception ex)
                     {
-                        lblError.Text = "ERROR: " + ex.Message + "\n\nMake sure the settings are correct!";
+                        lblError.Text = $"ERROR: {ex.Message}\n\nMake sure the settings are correct!";
                         lblError.Location = fraGame.Location;
                         lblError.Size = fraGame.Size;
                         lblError.Visible = true;
@@ -200,7 +225,7 @@ namespace JakContinueMapper
                 }
                 else
                 {
-                    lblError.Text = "Process could not be found, or is in an invalid state.";
+                    lblError.Text = "Process could not be found, or is in an invalid state.\nGame may not be booted up, or emulator is unsupported.";
                     lblError.Location = fraGame.Location;
                     lblError.Size = fraGame.Size;
                     lblError.Visible = true;
@@ -212,26 +237,23 @@ namespace JakContinueMapper
             dpdLevel.SelectedIndex = 0;
         }
 
-        internal void SetGame(Type game)
+        internal void SetGame(GameMemoryAttribute game)
         {
-            if (Game == null || game != Game.GetType()) // game changed
+            if (Game == null || Game != game) // game changed
             {
                 memtimer.Enabled = false;
                 // update current game and addresses
-                Game = (GameMemory)Activator.CreateInstance(game);
-                addrTargetPos = new GameAddr(Game.TargetPos());
-                addrSafeLevel = new GameAddr(Game.SafeLevel());
+                memtimer.Interval = game.Region == GameRegion.NTSCU ? 1000/60 : 1000/50;
+                Game = game;
+                addrTargetPos = new GameAddr(Game.TargetPos);
+                addrSafeLevel = new GameAddr(Game.SafeLevel);
                 memtimer.Enabled = true;
             }
         }
 
         private void dpdGame_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (dpdGame.SelectedIndex)
-            {
-                case 0: SetGame(typeof(Games.Jak1US)); break;
-                case 1: SetGame(typeof(Games.Jak1PAL)); break;
-            }
+            SetGame(games[(string)dpdGame.SelectedItem]);
         }
 
         protected override void OnMove(EventArgs e)
@@ -252,6 +274,11 @@ namespace JakContinueMapper
                 continueForm.Hide();
                 btnToggleContForm.Text = "Show All Checkpoints";
             }
+        }
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(this, "A tool to instantly visualize your Jak & Daxter idle deload results.\n\nThis tool is based on the original calculator made by Kuitar and blahpy.\n\nVersion 1.1 by mandude/dass @ github.com", "JakContinueMapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

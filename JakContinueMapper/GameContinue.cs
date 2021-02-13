@@ -2,6 +2,7 @@
 {
     public sealed class GameContinue
     {
+        public string Level { get; set; }
         public string Name { get; }
         public float X { get; }
         public float Y { get; }
