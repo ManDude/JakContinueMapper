@@ -144,7 +144,7 @@ namespace JakContinueMapper
             memtimer = new Timer
             {
                 Enabled = false,
-                Interval = 20
+                Interval = 16
             };
             memtimer.Tick += (object sender, EventArgs e) =>
             {
@@ -243,7 +243,6 @@ namespace JakContinueMapper
             {
                 memtimer.Enabled = false;
                 // update current game and addresses
-                memtimer.Interval = game.Region == GameRegion.NTSCU ? 1000/60 : 1000/50;
                 Game = game;
                 addrTargetPos = new GameAddr(Game.TargetPos);
                 addrSafeLevel = new GameAddr(Game.SafeLevel);
