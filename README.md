@@ -7,6 +7,8 @@ This tool is based on the [original calculator made by Kuitar and blahpy](https:
 
 The project is a Visual Studio 2019 project file, for .NET Core 3.0.
 
-## Downloading
+## Downloading and Running
 
 The latest release builds of the tool can be downloaded on [the releases tab](https://github.com/ManDude/JakContinueMapper/releases).
+
+To run the program, you need to have the [.NET Core 3.0 runtime](https://dotnet.microsoft.com/download/dotnet-core/3.0).
