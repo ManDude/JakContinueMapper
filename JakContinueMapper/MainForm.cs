@@ -88,7 +88,6 @@ namespace JakContinueMapper
             }},
             { "cit", new List<GameContinue>() {
                 new GameContinue("citadel-entrance", 11443969f, -154216.0313f, -18472782f),
-                new GameContinue("citadel-warp", 11454895f, -161791.5938f, -18204690f),
                 new GameContinue("citadel-start", 11442706f, -142755.8438f, -18869044f),
                 new GameContinue("citadel-launch-start", 10827551f, -94047.02344f, -18946718f),
                 new GameContinue("citadel-launch-end", 11047507f, -81514.08594f, -19495960f),
