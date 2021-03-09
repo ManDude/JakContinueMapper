@@ -26,12 +26,12 @@ namespace JakContinueMapper
                 {
                     Label lbl = new Label() {
                         Location = new Point(lblContList.Location.X+i/ContListHeight*240,
-                                             lblContList.Location.Y+i%ContListHeight*(lblContList.Height+5)),
+                                             lblContList.Location.Y+i%ContListHeight*(lblContList.Height+6)),
                         Text = cont.Name,
                         Size = new Size(240, lblContList.Height),
                         Tag = cont };
                     Width = Math.Max(lbl.Location.X+lbl.Width, Width);
-                    Height = Math.Max(lbl.Location.Y+lbl.Height+3+45, Height);
+                    Height = Math.Max(lbl.Location.Y+lbl.Height+6+45, Height);
                     Controls.Add(lbl);
                     labels.Add(lbl);
                     ++i;

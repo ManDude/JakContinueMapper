@@ -8,7 +8,7 @@
             PtrOff = ptroff;
         }
 
-        public int Addr { get; }
+        public int Addr { get; set; }
         public int[] PtrOff { get; }
 
         public int IteratePointer(EmuMemory emu)
@@ -21,5 +21,7 @@
             }
             return finaladdr;
         }
+
+        public static GameAddr operator +(GameAddr addr, int value) => new GameAddr(addr.Addr + value);
     }
 }

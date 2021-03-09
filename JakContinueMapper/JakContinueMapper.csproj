@@ -7,4 +7,10 @@
     <StartupObject>JakContinueMapper.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Update="SymbolTableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

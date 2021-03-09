@@ -12,9 +12,10 @@ namespace JakContinueMapper
         public GameMemoryAttribute Game { get; set; }
 
         private GameAddr addrTargetPos;
-        private GameAddr addrSafeLevel;
+        private GameAddr addrSymbolTable;
         private Timer memtimer;
         private ContinueForm continueForm;
+        private SymbolTableForm symbolTableForm;
 
         public static Dictionary<string, List<GameContinue>> continues = new Dictionary<string, List<GameContinue>>()
         {
@@ -136,6 +137,7 @@ namespace JakContinueMapper
             InitializeComponent();
             MinimumSize = Size;
             continueForm = new ContinueForm(this);
+            symbolTableForm = new SymbolTableForm();
             //continueForm.Show();
             PopulateGamesList();
             SetContinueLevels();
@@ -185,13 +187,13 @@ namespace JakContinueMapper
                         if (close1 == null)
                             lblContinueName1.Text = "(no available checkpoint)";
                         else
-                            lblContinueName1.Text = $"{close1.Name} ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close1.X, close1.Y, close1.Z)/4096})";
+                            lblContinueName1.Text = $"{close1.Name} ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close1.X, close1.Y, close1.Z)/4096}m)";
                         if (close1 != null && close2 == null)
                             lblContinueName2.Text = "(idle deload has no effect)";
                         else if (close2 == null)
                             lblContinueName2.Text = "(no available checkpoint)";
                         else
-                            lblContinueName2.Text = $"{close2.Name} ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close2.X, close2.Y, close2.Z)/4096})";
+                            lblContinueName2.Text = $"{close2.Name} ({MathExt.Dist3D(tgt_x, tgt_y, tgt_z, close2.X, close2.Y, close2.Z)/4096}m)";
                         if (close1 != null && close2 != null)
                         {
                             float mx = (close1.X + close2.X) / 2;
@@ -209,6 +211,11 @@ namespace JakContinueMapper
                             lblContinueMedianDist.Text = "(no second checkpoint)";
                         }
                         if (continueForm.Visible) continueForm.UpdateAllContinues(level, tgt_x, tgt_y, tgt_z, close1);
+                        if (symbolTableForm.Visible) {
+                            Emulator.ReadMem(addrSymbolTable, 0x10000, out byte[] symboltable);
+                            Emulator.ReadMem(addrSymbolTable+65336, 0x10000, out byte[] symbolnameptrs);
+                            symbolTableForm.UpdateSymbols(Emulator, addrSymbolTable);
+                        }
 
                         lblError.Visible = false;
                         fraGame.Visible = true;
@@ -244,7 +251,7 @@ namespace JakContinueMapper
                 // update current game and addresses
                 Game = game;
                 addrTargetPos = new GameAddr(Game.TargetPos);
-                addrSafeLevel = new GameAddr(Game.SafeLevel);
+                addrSymbolTable = new GameAddr(Game.SymbolTable);
                 memtimer.Enabled = true;
             }
         }
@@ -276,7 +283,19 @@ namespace JakContinueMapper
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, "A tool to instantly visualize your Jak & Daxter idle deload results.\n\nThis tool is based on the original calculator made by Kuitar and blahpy.\n\nVersion 1.1 by mandude/dass @ github.com", "JakContinueMapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "A tool to instantly visualize your Jak & Daxter idle deload results.\n\nThis tool is based on the original calculator made by Kuitar and blahpy.\n\nVersion 1.3 by mandude/dass @ github.com", "JakContinueMapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnSymbolTable_Click(object sender, EventArgs e)
+        {
+            if (!symbolTableForm.Visible)
+            {
+                symbolTableForm.Show();
+            }
+            else
+            {
+                symbolTableForm.Hide();
+            }
         }
     }
 }

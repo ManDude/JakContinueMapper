@@ -33,6 +33,8 @@ namespace JakContinueMapper
             this.label2 = new System.Windows.Forms.Label();
             this.dpdGame = new System.Windows.Forms.ComboBox();
             this.fraGame = new System.Windows.Forms.GroupBox();
+            this.btnSymbolTable = new System.Windows.Forms.Button();
+            this.lblPos = new System.Windows.Forms.Label();
             this.btnToggleContForm = new System.Windows.Forms.Button();
             this.lblContinueMedianDist = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -45,7 +47,6 @@ namespace JakContinueMapper
             this.label3 = new System.Windows.Forms.Label();
             this.lblError = new System.Windows.Forms.Label();
             this.btnAbout = new System.Windows.Forms.Button();
-            this.lblPos = new System.Windows.Forms.Label();
             this.fraEmu.SuspendLayout();
             this.fraGame.SuspendLayout();
             this.SuspendLayout();
@@ -82,6 +83,7 @@ namespace JakContinueMapper
             // 
             // fraGame
             // 
+            this.fraGame.Controls.Add(this.btnSymbolTable);
             this.fraGame.Controls.Add(this.lblPos);
             this.fraGame.Controls.Add(this.btnToggleContForm);
             this.fraGame.Controls.Add(this.lblContinueMedianDist);
@@ -100,6 +102,25 @@ namespace JakContinueMapper
             this.fraGame.TabStop = false;
             this.fraGame.Text = "Game";
             this.fraGame.Visible = false;
+            // 
+            // btnSymbolTable
+            // 
+            this.btnSymbolTable.Location = new System.Drawing.Point(147, 154);
+            this.btnSymbolTable.Name = "btnSymbolTable";
+            this.btnSymbolTable.Size = new System.Drawing.Size(128, 23);
+            this.btnSymbolTable.TabIndex = 12;
+            this.btnSymbolTable.Text = "Symbols (Advanced)";
+            this.btnSymbolTable.UseVisualStyleBackColor = true;
+            this.btnSymbolTable.Click += new System.EventHandler(this.btnSymbolTable_Click);
+            // 
+            // lblPos
+            // 
+            this.lblPos.Location = new System.Drawing.Point(100, 19);
+            this.lblPos.Name = "lblPos";
+            this.lblPos.Size = new System.Drawing.Size(175, 53);
+            this.lblPos.TabIndex = 11;
+            this.lblPos.Text = "X:\r\nY:\r\nZ:";
+            this.lblPos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnToggleContForm
             // 
@@ -239,15 +260,6 @@ namespace JakContinueMapper
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
-            // lblPos
-            // 
-            this.lblPos.Location = new System.Drawing.Point(100, 19);
-            this.lblPos.Name = "lblPos";
-            this.lblPos.Size = new System.Drawing.Size(175, 53);
-            this.lblPos.TabIndex = 11;
-            this.lblPos.Text = "X:\r\nY:\r\nZ:";
-            this.lblPos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -288,6 +300,7 @@ namespace JakContinueMapper
         private System.Windows.Forms.Button btnToggleContForm;
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.Label lblPos;
+        private System.Windows.Forms.Button btnSymbolTable;
     }
 }
 

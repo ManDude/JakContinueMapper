@@ -47,7 +47,7 @@ namespace JakContinueMapper
             if (!ProcessIsValid) SetProcess(name);
         }
 
-        internal byte[] ReadMemBuf(int addr, int memsize)
+        private byte[] ReadMemBuf(int addr, int memsize)
         {
             if (!ProcessIsValid) return null;
             byte[] membuf = new byte[memsize];
@@ -56,7 +56,7 @@ namespace JakContinueMapper
             return membuf;
         }
 
-        internal bool WriteMemBuf(int addr, byte[] membuf)
+        private bool WriteMemBuf(int addr, byte[] membuf)
         {
             if (!ProcessIsValid) return false;
             bool error = WriteProcessMemory(Process.Handle, GetAddress(addr), membuf, membuf.Length, out IntPtr memcount);
@@ -68,6 +68,15 @@ namespace JakContinueMapper
         {
             result = ReadMemBuf(addr, size);
             if (result == null) return false;
+            return true;
+        }
+
+        public bool ReadByte(int addr, out byte result)
+        {
+            result = 0;
+            byte[] membuf = ReadMemBuf(addr, 1);
+            if (membuf == null) return false;
+            result = membuf[0];
             return true;
         }
 
@@ -100,12 +109,31 @@ namespace JakContinueMapper
             return true;
         }
 
+        public string ReadCString(int addr)
+        {
+            string str = string.Empty;
+            while (true)
+            {
+                int oldlen = str.Length;
+                ReadMem(addr, 256, out byte[] str_part);
+                str += System.Text.Encoding.Default.GetString(str_part);
+                str = str.Substring(0, str.IndexOf('\0'));
+                if (str.Length % 256 != 0 && str.Length > oldlen) break;
+                addr += 256;
+            }
+            return str;
+        }
+
         public bool ReadMem(GameAddr addr, int size, out byte[] result) => ReadMem(addr.IteratePointer(this), size, out result);
+        public bool ReadByte(GameAddr addr, out byte result) => ReadByte(addr.IteratePointer(this), out result);
         public bool ReadInt32(GameAddr addr, out int result) => ReadInt32(addr.IteratePointer(this), out result);
         public bool ReadFloat(GameAddr addr, out float result) => ReadFloat(addr.IteratePointer(this), out result);
         public bool ReadFloat3(GameAddr addr, out float x, out float y, out float z) => ReadFloat3(addr.IteratePointer(this), out x, out y, out z);
+        public string ReadCString(GameAddr addr) => ReadCString(addr.IteratePointer(this));
 
+        public bool WriteInt32(int addr, uint val) => WriteMemBuf(addr, BitConverter.GetBytes(val));
         public bool WriteInt32(GameAddr addr, uint val) => WriteMemBuf(addr.IteratePointer(this), BitConverter.GetBytes(val));
+        public bool WriteFloat(int addr, float val) => WriteMemBuf(addr, BitConverter.GetBytes(val));
         public bool WriteFloat(GameAddr addr, float val) => WriteMemBuf(addr.IteratePointer(this), BitConverter.GetBytes(val));
     }
 }
