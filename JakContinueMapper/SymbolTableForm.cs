@@ -11,11 +11,18 @@ namespace JakContinueMapper
         private int pagenum = 0;
         private int pagemax;
         private List<Label> labels = new List<Label>();
+        private bool search_query = false;
+        private int search_index = 0;
+        private string search_term;
         Label lblPageNum;
         Button btnPrev;
         Button btnNext;
+        TextBox txtSearch;
+        private Font fontRegular;
+        private Font fontItalic;
+        private Font fontBold;
 
-        internal const int ContListHeight = 28;
+        internal const int ContListHeight = 25;
         internal const int entries_per_page = ContListHeight * 4;
         public SymbolTableForm()
         {
@@ -27,7 +34,7 @@ namespace JakContinueMapper
                 Label lbl = new Label()
                 {
                     Location = new Point(lblContList.Location.X + i/ContListHeight * 250,
-                                         lblContList.Location.Y + i%ContListHeight * (lblContList.Height + 6)),
+                                         lblContList.Location.Y + i%ContListHeight * (lblContList.Height + 0)),
                     Text = "#f",
                     Visible = false,
                     Size = new Size(250, lblContList.Height),
@@ -41,15 +48,18 @@ namespace JakContinueMapper
                 Controls.Add(lbl);
                 labels.Add(lbl);
             }
+            fontRegular = new Font(labels[0].Font, FontStyle.Regular);
+            fontItalic = new Font(fontRegular, FontStyle.Italic);
+            fontBold = new Font(fontRegular, FontStyle.Bold);
 
             Width = 16 + 250 * 4;
             lblPageNum = new Label()
             {
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point((Width-10)/2-75, max_height+6),
-                AutoSize = false
+                AutoSize = false,
+                Width = 150
             };
-            lblPageNum.Size = new Size(150, lblPageNum.Height);
             btnPrev = new Button()
             {
                 Text = "<",
@@ -64,10 +74,19 @@ namespace JakContinueMapper
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Location = new Point(lblPageNum.Location.X+lblPageNum.Width+6, max_height+6)
             };
-            max_height = Math.Max(lblPageNum.Location.Y+ lblPageNum.Height, max_height);
+            max_height = Math.Max(lblPageNum.Location.Y+lblPageNum.Height, max_height);
+            txtSearch = new TextBox()
+            {
+                Location = new Point((Width-10)/2-75, max_height+6)
+            };
+            txtSearch.Width = 150;
+            txtSearch.KeyDown += txtSearch_KeyDown;
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            max_height = Math.Max(txtSearch.Location.Y+txtSearch.Height, max_height);
             Controls.Add(lblPageNum);
             Controls.Add(btnPrev);
             Controls.Add(btnNext);
+            Controls.Add(txtSearch);
             btnPrev.Location = new Point(btnPrev.Location.X - btnPrev.Width, btnPrev.Location.Y);
 
             pagemax = (UsableSymbolCount + entries_per_page - 1) / entries_per_page;
@@ -86,6 +105,22 @@ namespace JakContinueMapper
             ValidatePageNav();
 
             Height = Math.Max(max_height+6+45, Height);
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            search_index = 0;
+        }
+
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Enter:
+                    search_term = txtSearch.Text;
+                    search_query = !string.IsNullOrWhiteSpace(search_term);
+                    break;
+            }
         }
 
         internal void ValidatePageNav()
@@ -116,10 +151,38 @@ namespace JakContinueMapper
 
             int goal_false = GetSymbolVal(symboltable, 0);
             int goal_true = GetSymbolVal(symboltable, 1);
-            for (int i = 0; i < entries_per_page; ++i)
+
+            if (search_query)
+            {
+                for (int i = search_index; i < UsableSymbolCount; ++i)
+                {
+                    int name_addr = GetSymbolVal(symbolnameptrs, i);
+                    string name;
+                    if ((name_addr & 0xF) == 4 && name_addr < 0x8000000)
+                    {
+                        name = emu.ReadCString(name_addr + 4);
+                    }
+                    else
+                        continue;
+                    if (name.Contains(search_term))
+                    {
+                        search_index = i+1;
+                        pagenum = i / entries_per_page;
+                        ValidatePageNav();
+                        search_query = false;
+                        break;
+                    }
+                }
+                if (search_query)
+                {
+                    search_index = 0;
+                    search_query = false;
+                }
+            }
+
+            for (int i = 0, symbolindex = pagenum * entries_per_page; i < entries_per_page; ++i, ++symbolindex)
             {
                 Label lbl = labels[i];
-                int symbolindex = pagenum*entries_per_page + i;
                 if (symbolindex < UsableSymbolCount)
                 {
                     lbl.Visible = true;
@@ -136,17 +199,19 @@ namespace JakContinueMapper
                     int addr = GetSymbolAddr(symbolindex);
                     if (val == goal_false)
                     {
+                        lbl.Font = fontItalic;
                         if ((int)lbl.Tag == 1)
                         {
                             lbl.Tag = 0;
                             emu.WriteInt32(addrSymbolTable + addr, (uint)goal_true);
-                            lbl.ForeColor = Color.Green;
+                            lbl.ForeColor = Color.LimeGreen;
                         }
                         else
                             lbl.ForeColor = Color.Red;
                     }
                     else if (val == goal_true)
                     {
+                        lbl.Font = fontItalic;
                         if ((int)lbl.Tag == 1)
                         {
                             lbl.Tag = 0;
@@ -154,10 +219,17 @@ namespace JakContinueMapper
                             lbl.ForeColor = Color.Red;
                         }
                         else
-                            lbl.ForeColor = Color.Green;
+                            lbl.ForeColor = Color.LimeGreen;
                     }
                     else
+                    {
+                        lbl.Font = fontRegular;
                         lbl.ForeColor = Color.Black;
+                    }
+                    if (symbolindex == search_index-1)
+                    {
+                        lbl.Font = fontBold;
+                    }
                 }
                 else
                 {

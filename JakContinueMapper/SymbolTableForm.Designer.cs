@@ -34,20 +34,19 @@ namespace JakContinueMapper
             // 
             // lblContList
             // 
-            this.lblContList.AutoSize = true;
             this.lblContList.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblContList.Location = new System.Drawing.Point(13, 13);
+            this.lblContList.Location = new System.Drawing.Point(13, 15);
             this.lblContList.Name = "lblContList";
-            this.lblContList.Size = new System.Drawing.Size(252, 15);
+            this.lblContList.Size = new System.Drawing.Size(252, 19);
             this.lblContList.TabIndex = 1;
             this.lblContList.Text = "symbol-name-that-is-very-long-i-mean-really";
             this.lblContList.Visible = false;
             // 
             // SymbolTableForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(322, 370);
+            this.ClientSize = new System.Drawing.Size(322, 419);
             this.ControlBox = false;
             this.Controls.Add(this.lblContList);
             this.DoubleBuffered = true;
@@ -57,7 +56,6 @@ namespace JakContinueMapper
             this.Name = "SymbolTableForm";
             this.Text = "SymbolTableForm - click booleans to toggle";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
