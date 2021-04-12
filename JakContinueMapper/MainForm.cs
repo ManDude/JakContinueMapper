@@ -283,7 +283,7 @@ namespace JakContinueMapper
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, "A tool to instantly visualize your Jak & Daxter idle deload results.\n\nThis tool is based on the original calculator made by Kuitar and blahpy.\n\nVersion 1.3 by mandude/dass @ github.com", "JakContinueMapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "A tool to instantly visualize your Jak & Daxter idle deload results.\n\nThis tool is based on the original calculator made by Kuitar and blahpy.\n\nIncludes a variety of other utilities.\n\nVersion 1.4 by mandude/dass @ github.com", "JakContinueMapper", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnSymbolTable_Click(object sender, EventArgs e)
