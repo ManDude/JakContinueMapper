@@ -34,20 +34,19 @@ namespace JakContinueMapper
             // 
             // lblContList
             // 
-            this.lblContList.AutoSize = true;
             this.lblContList.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblContList.Location = new System.Drawing.Point(13, 13);
+            this.lblContList.Location = new System.Drawing.Point(13, 15);
             this.lblContList.Name = "lblContList";
-            this.lblContList.Size = new System.Drawing.Size(221, 15);
+            this.lblContList.Size = new System.Drawing.Size(221, 18);
             this.lblContList.TabIndex = 0;
             this.lblContList.Text = "citadel-generator-start: 99999.999999";
             this.lblContList.Visible = false;
             // 
             // ContinueForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(244, 143);
+            this.ClientSize = new System.Drawing.Size(244, 162);
             this.ControlBox = false;
             this.Controls.Add(this.lblContList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -56,7 +55,6 @@ namespace JakContinueMapper
             this.Name = "ContinueForm";
             this.Text = "ContinueForm";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

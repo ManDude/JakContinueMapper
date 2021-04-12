@@ -26,7 +26,7 @@ namespace JakContinueMapper
                 {
                     Label lbl = new Label() {
                         Location = new Point(lblContList.Location.X+i/ContListHeight*240,
-                                             lblContList.Location.Y+i%ContListHeight*(lblContList.Height+6)),
+                                             lblContList.Location.Y+i%ContListHeight*(lblContList.Height)),
                         Text = cont.Name,
                         Size = new Size(240, lblContList.Height),
                         Tag = cont };
